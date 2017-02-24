@@ -14,11 +14,11 @@ using Dapper;
 
 namespace VirtuUSA.Beep1
 {
-    public class IACycle : CustomerController
+    public class VirtuUSACycle : CustomerController
     {
         private ItemCache ic;
 
-        public IACycle(GlobalResources res) : base(res)
+        public VirtuUSACycle(GlobalResources res) : base(res)
         {
             api = res.api;
             //db = res.db;
@@ -63,8 +63,9 @@ namespace VirtuUSA.Beep1
                 C.CL();
                 C.WL("Cycle Count");
                 C.WL("Location: " + ((Location != null) ? Location : "NONE"));
-                C.WL("Part: " + (partNo ?? "NONE"));
-                C.WL("F1=Exit" + (isReady ? "F2=Count" : ""));
+                //C.WL("Part: " + (partNo ?? "NONE"));
+                //C.WL("F1=Exit" + (isReady ? "F2=Count" : ""));
+                C.WL("F1=Exit F3=Next Location");
 
                 if (Location == null)
                 {
@@ -74,9 +75,9 @@ namespace VirtuUSA.Beep1
                     {
                         var yn = C.YN("Are you sure? Exiting.");
                         cancel = yn;
-                        continue;
+                        return;
                     }
-                    if (!String.IsNullOrWhiteSpace(scan) && scan.Length == 7)
+                    if (!String.IsNullOrWhiteSpace(scan))
                     {
                         Location = scan;
                         continue;
@@ -102,11 +103,14 @@ namespace VirtuUSA.Beep1
                     {
                         var yn = C.YN("Are you sure? Finishing.");
                         finish = yn;
-                        continue;
+                        return;
                     }
                     else if (fnKey.HasValue)
                     {
-
+                        if (fnKey.Value == ConsoleKey.F3)
+                        {
+                            Location = null;
+                        }
                     }
                     //else if (!String.IsNullOrWhiteSpace(scan) && (scan.Length <= 7))
                     else if (!String.IsNullOrWhiteSpace(scan))
@@ -138,7 +142,7 @@ namespace VirtuUSA.Beep1
                         //Location = null;
                         partNo = null;
                     }
-                    return;
+                    continue;
                 }
             }
         }
